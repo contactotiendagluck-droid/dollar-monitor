@@ -2,24 +2,25 @@ name: 🕷️ Monitor Dólar
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'   # cada 5 minutos
   workflow_dispatch:
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    - run: pip install -r requirements.txt
-    - uses: actions/cache@v3
-      with:
-        path: scraped_prices.json
-        key: prices-${{ github.run_id }}
-        restore-keys: prices-
-    - env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      run: python dollar_scraper_advanced.py
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: python -m playwright install chromium   # 👈 necesario para FA
+      - uses: actions/cache@v3
+        with:
+          path: scraped_prices.json
+          key: prices-${{ github.run_id }}
+          restore-keys: prices-
+      - env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python dollar_scraper_advanced.py
