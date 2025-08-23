@@ -2,7 +2,7 @@ name: 🕷️ Monitor Dólar
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # cada 5 minutos
+    - cron: '*/5 * * * *'   # 👈 cada 5 minutos
   workflow_dispatch:
 
 jobs:
