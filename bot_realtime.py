@@ -17,6 +17,24 @@ from dollar_scraper_advanced import (
 TZ_BA = ZoneInfo("America/Argentina/Buenos_Aires")
 SUBS_FILE = "subscribers.json"
 
+from flask import Flask
+import threading
+
+def keep_alive():
+    app = Flask(__name__)
+
+    @app.get("/")
+    def home():
+        return "Bot OK"
+
+    # Render usa el puerto 10000 si está definido, sino 8080
+    import os
+    port = int(os.getenv("PORT", "8080"))
+    app.run(host="0.0.0.0", port=port)
+
+# Lanzamos el server en un thread para no bloquear el bot
+threading.Thread(target=keep_alive, daemon=True).start()
+
 # ---------------- Persistencia de suscriptores ---------------- #
 def load_subs() -> set[int]:
     if os.path.exists(SUBS_FILE):
