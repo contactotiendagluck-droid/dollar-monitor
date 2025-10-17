@@ -1,12 +1,18 @@
 services:
-  - type: worker
-    name: dolar-bot-worker
+  - type: web
+    name: dolar-bot
     env: python
     plan: free
-    buildCommand: |
-      pip install -r requirements.txt
-      python -m playwright install --with-deps chromium
-    startCommand: python bot_realtime.py
     envVars:
       - key: TELEGRAM_BOT_TOKEN
-        sync: false   # lo cargamos desde el dashboard de Render
+        sync: false
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: "0"                 # 👈 browsers dentro del bundle (persisten)
+      - key: PORT
+        value: "10000"             # 👈 Render te inyecta PORT, lo fijamos por claridad
+    buildCommand: |
+      pip install -r requirements.txt
+      python -m playwright install --with-deps chromium   # 👈 instala en build
+    startCommand: |
+      python -m playwright install --with-deps chromium   # 👈 y reasegura en runtime
+      python bot_realtime.py
